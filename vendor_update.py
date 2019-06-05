@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, redirect, g
+from sqlite3 import dbapi2 as sqlite3 
 import os
 
 app = Flask(__name__)
@@ -24,3 +25,24 @@ def updates_upload():
             return render_template('success.html')
     else:
         return render_template('file_upload.html')
+
+
+def connect_db():
+    rv = sqlite3.connect(app.config['DATABASE'])
+    rv.row_factory = sqlite3.Row
+    return rv
+
+def get_db():
+    if not hasattr(g, 'sqlite_db'):
+        g.sqlite_db = connect_db()
+    return g.sqlite_db
+
+def init_db():
+    db = get_db()
+    with app.open_resource('schema.sql', mode='r') as f:
+        db.cursor().executescript(f.read())
+    db.commit()
+
+
+def process_vendor_updates(update_str):
+    pass
