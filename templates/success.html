@@ -2,3 +2,9 @@
 <title>Success!</title>
 <h1>Your updates were submitted.</h1>
 <p>Thank you.</p>
+<p>The modified entries:</p>
+<ul>
+{% for entry in all_entries %}
+	<li>{{ entry[0] + " " + entry[1] + " " + entry[2] }}</li>
+{% endfor %}
+</ul>

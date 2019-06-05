@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS customers;
 CREATE TABLE customers (
-  id integer PRIMARY KEY,
+  key integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+  id integer NOT NULL,
   first_name text NOT NULL,
   last_name text NOT NULL,
   street_address text NOT NULL,

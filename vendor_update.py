@@ -22,11 +22,28 @@ def updates_upload():
         updates_file = request.files['updates_file']
         if updates_file:
             updates_file_contents = updates_file.read().decode('utf-8')
-            parse_file_contents(updates_file_contents)
-            return render_template('success.html')
+            updates = parse_file_contents(updates_file_contents)
+            commit_updates_to_db(updates)
+            return render_template('success.html', all_entries=get_all_entries())
     else:
         return render_template('file_upload.html')
 
+
+def commit_updates_to_db(updates):
+    for update in updates:
+        db = get_db()
+        db.execute('INSERT INTO customers (id, first_name, last_name, street_address, state, zip_code, purchase_status, product_id, product_name, item_price, date_time) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+               [int(update["id"]), update["first_name"], update["last_name"], update["street_address"],
+                   update["state"], update["zip_code"], update["purchase_status"], 
+                   int(update["product_id"]), update["product_name"],
+                   update["item_price"], update["date_time"]])
+        db.commit()
+
+def get_all_entries():
+    db = get_db()
+    cur = db.execute('select first_name, last_name, purchase_status from customers order by id desc')
+    entries = cur.fetchall()
+    return entries
 
 def connect_db():
     rv = sqlite3.connect(app.config['DATABASE'])
@@ -43,6 +60,12 @@ def init_db():
     with app.open_resource('schema.sql', mode='r') as f:
         db.cursor().executescript(f.read())
     db.commit()
+
+@app.cli.command('initdb')
+def initdb_command():
+    init_db()
+    print('Initialized the database.')
+
 
 
 def parse_file_contents(update_items):
@@ -67,3 +90,4 @@ def parse_record_data(record):
     record['date_time'] = fields[10]
 
     return record
+
