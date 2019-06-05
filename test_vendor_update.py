@@ -20,7 +20,6 @@ class VendorUpdateTestCase(unittest.TestCase):
 
     def test_get_response(self):
         response = self.app.get('/')
-        # self.assertIsNotNone(response.text)
         assert response.status_code is 200
 
 
@@ -48,7 +47,6 @@ class VendorUpdateTestCase(unittest.TestCase):
             'last_name', 'street_address', 'state', 'zip_code', 
             'purchase_status', 'product_id', 'product_name', 
             'item_price', 'date_time'])
-
 
 
 if __name__ == '__main__':

@@ -18,10 +18,11 @@ def updates_upload():
     if request.method == 'POST':
         if 'updates_file' not in request.files:
             return redirect(request.url)
+
         updates_file = request.files['updates_file']
         if updates_file:
-            contents = updates_file.read()
-            parse_file_contents(contents)
+            updates_file_contents = updates_file.read().decode('utf-8')
+            parse_file_contents(updates_file_contents)
             return render_template('success.html')
     else:
         return render_template('file_upload.html')
