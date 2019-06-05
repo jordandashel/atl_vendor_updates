@@ -21,7 +21,7 @@ def updates_upload():
         updates_file = request.files['updates_file']
         if updates_file:
             contents = updates_file.read()
-            process_vendor_updates(contents)
+            parse_file_contents(contents)
             return render_template('success.html')
     else:
         return render_template('file_upload.html')
@@ -44,5 +44,25 @@ def init_db():
     db.commit()
 
 
-def process_vendor_updates(update_str):
-    pass
+def parse_file_contents(update_items):
+    records = update_items.split('\n')
+    processed_records = [parse_record_data(record)
+            for record in records if record]
+    return processed_records
+
+def parse_record_data(record):
+    fields = record.split('\t')
+    record = {}
+    record['id'] = fields[0]
+    record['first_name'] = fields[1]
+    record['last_name'] = fields[2]
+    record['street_address'] = fields[3]
+    record['state'] = fields[4]
+    record['zip_code'] = fields[5]
+    record['purchase_status'] = fields[6]
+    record['product_id'] = fields[7]
+    record['product_name'] = fields[8]
+    record['item_price'] = fields[9]
+    record['date_time'] = fields[10]
+
+    return record
