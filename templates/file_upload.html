@@ -1,0 +1,7 @@
+<!doctype html>
+<title>Upload vendor changes</title>
+<h1>Upload a File</h1>
+<form method=post enctype=multipart/form-data action="{{ url_for('updates_upload') }}">
+<input type=file name=updates_file>
+<input type=submit value=Upload>
+</form>
